@@ -21,19 +21,26 @@ public class Main {
             for (int col = 0; col < board.getColumns(); col++) {
                 boolean pieceFound = false;
                 char pieceName = ' ';
+                Piece.Color pieceColor = null;
                 for (Piece piece : pieces) {
                     if (piece.getRow() == row && piece.getCol() == col) {
                         pieceName = piece.getName();
+                        pieceColor =piece.getColor();
                         pieceFound = true;
                         break;
                     }
                 }
 
                 String backgroundColor = ((row + col) % 2 == 0) ? "\u001B[44m" : "\u001B[47m";
-
+                // Determine the text color for the piece name
+                String textColor = (pieceFound && pieceName != ' ') ? "\u001B[30m" : "\u001B[0m";
                 // Print the square with or without a piece
                 if (pieceFound) {
-                System.out.print(backgroundColor + "  "+ pieceName +  " \u001B[0m");
+                    if (pieceColor.equals(BLACK)){
+                    System.out.print(backgroundColor +  textColor + "  "+ pieceName +  " \u001B[0m");
+                    }else {
+                    System.out.print(backgroundColor +  "  "+ pieceName +  " \u001B[0m");
+                    }
                 } else {
                     System.out.print(backgroundColor +"    "+ "\u001B[0m");
                 }
@@ -45,24 +52,33 @@ public class Main {
         Scanner scanner =new Scanner(System.in);
         System.out.println("Enter Piece Coordinates");
         String piecePlace = scanner.nextLine();
-        Scanner scanner2 =new Scanner(System.in);
-        System.out.println("Enter Piece Destination Coordinates");
-        String pieceDest =scanner2.nextLine();
+
         if(isValid(piecePlace)){
             int pieceColumn = columnToIndex(piecePlace.charAt(0));
             int pieceRow = rowToIndex(piecePlace.charAt(1));
-            int pieceColumnDest = columnToIndex(pieceDest.charAt(0));
-            int pieceRowDest = rowToIndex(pieceDest.charAt(1));
-            System.out.println(pieceColumn + " " +pieceRow);
+            int pieceColumnDest = -1;
+            int pieceRowDest = -1;
             for(Piece piece : pieces){
                 if (piece.getCol()== pieceColumn && piece.getRow() == pieceRow) {
-                    System.out.println(piece);
+                    Scanner scanner2 =new Scanner(System.in);
+                    System.out.println("Enter Piece Destination Coordinates");
+                    String pieceDest =scanner2.nextLine();
+                     pieceColumnDest = columnToIndex(pieceDest.charAt(0));
+                     pieceRowDest = rowToIndex(pieceDest.charAt(1));
                     piece.setCol(pieceColumnDest);
                     piece.setRow(pieceRowDest);
-                    printBoard(pieces);
+                    System.out.println(piece);
+                    boolean movement = move(piece.getName(),pieceColumn,pieceRow,pieceColumnDest,pieceRowDest);
+                    if (movement){
+                        System.out.println("you can move");
+                        printBoard(pieces);
+                    }else {
+                        System.out.println("you can't move to this cell");
+                    }
+
                 }
             }
-//            pieces.forEach(System.out::println);
+//            System.out.println("This cell is empty");
         }else {
             System.out.println("Please enter a valid cell Coordinates");
         }
@@ -99,6 +115,23 @@ public class Main {
         pieces.add(new King(4, 0,WHITE,'K'));
         pieces.add(new King(4, 7,BLACK,'K'));
         return pieces;
+    }
+
+    static boolean move(char pieceName, int currentCol, int currentRow, int destCol, int destRow){
+      if(pieceName=='R'){
+          if(currentCol ==destCol||currentRow==destRow){
+              return true;
+          }
+      }else if(pieceName=='B'){
+          if((currentCol -currentRow )==(destCol-destRow) || (currentCol+currentRow)==(destCol+destRow)){
+              return true;
+          }
+      }else if(pieceName=='Q'){
+          if((currentCol -currentRow )==(destCol-destRow) || (currentCol+currentRow)==(destCol+destRow) || currentCol ==destCol||currentRow==destRow){
+              return true;
+          }
+      }
+        return false;
     }
 }
 

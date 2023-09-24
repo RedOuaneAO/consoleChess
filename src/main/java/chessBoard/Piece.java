@@ -45,6 +45,7 @@ public abstract  class Piece {
         this.col = col;
     }
 
+
     public enum Color{
         BLACK , WHITE
     }
