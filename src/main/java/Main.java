@@ -30,7 +30,6 @@ public class Main {
                         break;
                     }
                 }
-
                 String backgroundColor = ((row + col) % 2 == 0) ? "\u001B[44m" : "\u001B[47m";
                 // Determine the text color for the piece name
                 String textColor = (pieceFound && pieceName != ' ') ? "\u001B[30m" : "\u001B[0m";
@@ -118,18 +117,18 @@ public class Main {
     }
 
     static boolean move(char pieceName, int currentCol, int currentRow, int destCol, int destRow){
+        int diffCol= Math.abs(destCol-currentCol);
+        int diffRow=Math.abs(destRow-currentRow);
       if(pieceName=='R'){
-          if(currentCol ==destCol||currentRow==destRow){
-              return true;
-          }
+        return currentCol ==destCol||currentRow==destRow;
       }else if(pieceName=='B'){
-          if((currentCol -currentRow )==(destCol-destRow) || (currentCol+currentRow)==(destCol+destRow)){
-              return true;
-          }
+         return currentCol -currentRow ==destCol-destRow || currentCol+currentRow==destCol+destRow;
       }else if(pieceName=='Q'){
-          if((currentCol -currentRow )==(destCol-destRow) || (currentCol+currentRow)==(destCol+destRow) || currentCol ==destCol||currentRow==destRow){
-              return true;
-          }
+         return currentCol -currentRow ==destCol-destRow || currentCol+currentRow==destCol+destRow || currentCol ==destCol||currentRow==destRow;
+       }else if(pieceName=='N'){
+            return diffCol==1 && diffRow==2 ||  diffCol==2 && diffRow==1;
+        }else if(pieceName=='K'){
+          return diffCol<=1 && diffRow<=1;
       }
         return false;
     }
