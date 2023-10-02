@@ -13,7 +13,7 @@ public class Main {
     printBoard(setPieces());
 }
     static void printBoard(List<Piece> pieces) {
-
+        System.out.println(pieces);
         Board board =new Board(8,8);
         System.out.print("   a   b   c   d   e   f   g   h\n");
         for (int row = 0; row <board.getRows(); row++) {
@@ -49,29 +49,34 @@ public class Main {
         System.out.print("   a   b   c   d   e   f   g   h\n");
         Scanner scanner =new Scanner(System.in);
         System.out.println("Enter Piece Coordinates");
-        String piecePlace = scanner.nextLine();
-        if(isValid(piecePlace)){
-            int pieceColumn = columnToIndex(piecePlace.charAt(0));
-            int pieceRow = rowToIndex(piecePlace.charAt(1));
+        String pieceCoord = scanner.nextLine();
+        if(isValid(pieceCoord)){
+            int currentCol = columnToIndex(pieceCoord.charAt(0));
+            int currentRow = rowToIndex(pieceCoord.charAt(1));
             int pieceColumnDest = -1;
             int pieceRowDest = -1;
             for(Piece piece : pieces){
-                if (piece.getCol()== pieceColumn && piece.getRow() == pieceRow) {
+                if (piece.getCol()== currentCol && piece.getRow() == currentRow) {
                     Scanner scanner2 =new Scanner(System.in);
                     System.out.println("Enter Piece Destination Coordinates");
                     String pieceDest =scanner2.nextLine();
                      pieceColumnDest = columnToIndex(pieceDest.charAt(0));
                      pieceRowDest = rowToIndex(pieceDest.charAt(1));
-                    piece.setCol(pieceColumnDest);
-                    piece.setRow(pieceRowDest);
                     System.out.println(piece);
-                    boolean movement = move(piece.getName(),pieceColumn,pieceRow,pieceColumnDest,pieceRowDest);
+                    boolean movement = move(pieces,piece.getName(),currentCol,currentRow,pieceColumnDest,pieceRowDest);
                     if (movement){
-//                        canEat();
+//                        if (piece.getCol()== pieceColumnDest && piece.getRow() == pieceRowDest) {
+//                            pieces.remove(piece);
+//                        }
                         System.out.println("you can move");
+                        piece.setName(piece.getName());
+                        piece.setColor(piece.getColor());
+                        piece.setCol(pieceColumnDest);
+                        piece.setRow(pieceRowDest);
                         printBoard(pieces);
                     }else {
                         System.out.println("you can't move to this cell");
+                        printBoard(pieces);
                     }
                 }
             }
@@ -114,17 +119,16 @@ public class Main {
         return pieces;
     }
 
-    static boolean move(char pieceName, int currentCol, int currentRow, int destCol, int destRow){
+    static boolean move(List<Piece> pieces,char pieceName, int currentCol, int currentRow, int destCol, int destRow){
         int diffCol= Math.abs(destCol-currentCol);
         int diffRow=Math.abs(destRow-currentRow);
       if(pieceName=='R'){
-//          if (currentCol ==destCol||currentRow==destRow){
-//          int rowIncrement = (currentRow == destRow) ? 0 : (currentRow < destRow) ? 1 : -1;
-//          int colIncrement = (currentCol == destCol) ? 0 : (currentCol < destCol) ? 1 : -1;
-//              int row = currentRow + rowIncrement;
-//              int col = currentCol + colIncrement;
-//          }
-        return true;
+          if(currentCol ==destCol||currentRow==destRow){
+                return !canEat( pieces,pieceName,  currentCol,  currentRow,  destCol,  destRow);
+          }
+              return false;
+
+
 
 
       }else if(pieceName=='B'){
@@ -136,11 +140,31 @@ public class Main {
       }else if(pieceName=='N'){
           return diffCol==1 && diffRow==2 ||  diffCol==2 && diffRow==1;
       } else if (pieceName=='P') {
+          return true;
       }
         return false;
     }
-//    static List<Piece> canEat(List<Piece> piece){
-//
-//    }
+
+    static boolean canEat(List<Piece> pieces ,char pieceName,int currentCol, int currentRow, int destCol, int destRow ){
+        if(pieceName=='R'){
+            int rowIncrement = (currentRow == destRow) ? 0 : (currentRow < destRow) ? 1 : -1;
+            int colIncrement = (currentCol == destCol) ? 0 : (currentCol < destCol) ? 1 : -1;
+            int row = currentRow + rowIncrement;
+            int col = currentCol + colIncrement;
+            while (row != destRow || col != destCol) {
+                for (Piece piece : pieces) {
+                    if (piece.getRow() == row && piece.getCol() == col) {
+                        // There's a piece in the path
+                        return true;
+                    }
+                }
+                row += rowIncrement;
+                col += colIncrement;
+            }
+            return false;
+        }
+
+        return false;
+    }
 }
 
