@@ -46,12 +46,10 @@ public class Main {
             }
             System.out.println();
         }
-
         System.out.print("   a   b   c   d   e   f   g   h\n");
         Scanner scanner =new Scanner(System.in);
         System.out.println("Enter Piece Coordinates");
         String piecePlace = scanner.nextLine();
-
         if(isValid(piecePlace)){
             int pieceColumn = columnToIndex(piecePlace.charAt(0));
             int pieceRow = rowToIndex(piecePlace.charAt(1));
@@ -69,12 +67,12 @@ public class Main {
                     System.out.println(piece);
                     boolean movement = move(piece.getName(),pieceColumn,pieceRow,pieceColumnDest,pieceRowDest);
                     if (movement){
+//                        canEat();
                         System.out.println("you can move");
                         printBoard(pieces);
                     }else {
                         System.out.println("you can't move to this cell");
                     }
-
                 }
             }
 //            System.out.println("This cell is empty");
@@ -120,17 +118,29 @@ public class Main {
         int diffCol= Math.abs(destCol-currentCol);
         int diffRow=Math.abs(destRow-currentRow);
       if(pieceName=='R'){
-        return currentCol ==destCol||currentRow==destRow;
+//          if (currentCol ==destCol||currentRow==destRow){
+//          int rowIncrement = (currentRow == destRow) ? 0 : (currentRow < destRow) ? 1 : -1;
+//          int colIncrement = (currentCol == destCol) ? 0 : (currentCol < destCol) ? 1 : -1;
+//              int row = currentRow + rowIncrement;
+//              int col = currentCol + colIncrement;
+//          }
+        return true;
+
+
       }else if(pieceName=='B'){
          return currentCol -currentRow ==destCol-destRow || currentCol+currentRow==destCol+destRow;
       }else if(pieceName=='Q'){
          return currentCol -currentRow ==destCol-destRow || currentCol+currentRow==destCol+destRow || currentCol ==destCol||currentRow==destRow;
-       }else if(pieceName=='N'){
-            return diffCol==1 && diffRow==2 ||  diffCol==2 && diffRow==1;
-        }else if(pieceName=='K'){
+       }else if(pieceName=='K'){
           return diffCol<=1 && diffRow<=1;
+      }else if(pieceName=='N'){
+          return diffCol==1 && diffRow==2 ||  diffCol==2 && diffRow==1;
+      } else if (pieceName=='P') {
       }
         return false;
     }
+//    static List<Piece> canEat(List<Piece> piece){
+//
+//    }
 }
 
