@@ -13,7 +13,17 @@ public class Main {
     printBoard(setPieces());
 }
     static void printBoard(List<Piece> pieces) {
-        System.out.println(pieces);
+//        String block = "█████   ███   █████          ████\n" +
+//                "░░███   ░███  ░░███          ░░███\n" +
+//                " ░███   ░███   ░███   ██████  ░███   ██████   ██████  █████████████    ██████\n" +
+//                " ░███   ░███   ░███  ███░░███ ░███  ███░░███ ███░░███░░███░░███░░███  ███░░███\n" +
+//                " ░░███  █████  ███  ░███████  ░███ ░███ ░░░ ░███ ░███ ░███ ░███ ░███ ░███████\n" +
+//                "  ░░░█████░█████░   ░███░░░   ░███ ░███  ███░███ ░███ ░███ ░███ ░███ ░███░░░\n" +
+//                "    ░░███ ░░███     ░░██████  █████░░██████ ░░██████  █████░███ █████░░██████\n" +
+//                "     ░░░   ░░░       ░░░░░░  ░░░░░  ░░░░░░   ░░░░░░  ░░░░░ ░░░ ░░░░░  ░░░░░░\n";
+//
+//        System.out.println(block);
+//        System.out.println(pieces);
         Board board =new Board(8,8);
         System.out.print("   a   b   c   d   e   f   g   h\n");
         for (int row = 0; row <board.getRows(); row++) {
@@ -47,6 +57,10 @@ public class Main {
             System.out.println();
         }
         System.out.print("   a   b   c   d   e   f   g   h\n");
+        startGame(pieces);
+    }
+
+    static void startGame(List<Piece> pieces){
         Scanner scanner =new Scanner(System.in);
         System.out.println("Enter Piece Coordinates");
         String pieceCoord = scanner.nextLine();
@@ -60,19 +74,21 @@ public class Main {
                     Scanner scanner2 =new Scanner(System.in);
                     System.out.println("Enter Piece Destination Coordinates");
                     String pieceDest =scanner2.nextLine();
-                     pieceColumnDest = columnToIndex(pieceDest.charAt(0));
-                     pieceRowDest = rowToIndex(pieceDest.charAt(1));
+                    pieceColumnDest = columnToIndex(pieceDest.charAt(0));
+                    pieceRowDest = rowToIndex(pieceDest.charAt(1));
                     System.out.println(piece);
                     boolean movement = move(pieces,piece.getName(),currentCol,currentRow,pieceColumnDest,pieceRowDest);
                     if (movement){
-//                        if (piece.getCol()== pieceColumnDest && piece.getRow() == pieceRowDest) {
-//                            pieces.remove(piece);
-//                        }
+                        for (Piece pieceR : pieces ) {
+                            if (pieceR.getCol()== pieceColumnDest && pieceR.getRow() == pieceRowDest){
+                                pieces.remove(pieceR);
+                                break;
+                            }
+                        }
                         System.out.println("you can move");
-                        piece.setName(piece.getName());
-                        piece.setColor(piece.getColor());
                         piece.setCol(pieceColumnDest);
                         piece.setRow(pieceRowDest);
+                        System.out.println(piece);
                         printBoard(pieces);
                     }else {
                         System.out.println("you can't move to this cell");
@@ -85,6 +101,16 @@ public class Main {
             System.out.println("Please enter a valid cell Coordinates");
         }
     }
+
+//    static void pieceCaptured (List<Piece> pieces ,int pieceColumnDest, int pieceRowDest){
+//        for (Piece piece : pieces ) {
+//            if (piece.getCol()== pieceColumnDest && piece.getRow() == pieceRowDest){
+////                System.out.println("this is a piece that should be removed" +rmvPiece);
+//                pieces.remove(piece);
+//                break;
+//            }
+//        }
+//    }
     static int rowToIndex(char rowChar) {
         return Integer.parseInt(String.valueOf(rowChar));
     }
@@ -126,13 +152,10 @@ public class Main {
           if(currentCol ==destCol||currentRow==destRow){
                 return !canEat( pieces,pieceName,  currentCol,  currentRow,  destCol,  destRow);
           }
-              return false;
-
-
-
-
       }else if(pieceName=='B'){
-         return currentCol -currentRow ==destCol-destRow || currentCol+currentRow==destCol+destRow;
+          if(currentCol -currentRow ==destCol-destRow || currentCol+currentRow==destCol+destRow){
+              return !canEat( pieces,pieceName,  currentCol,  currentRow,  destCol,  destRow);
+          }
       }else if(pieceName=='Q'){
          return currentCol -currentRow ==destCol-destRow || currentCol+currentRow==destCol+destRow || currentCol ==destCol||currentRow==destRow;
        }else if(pieceName=='K'){
@@ -154,7 +177,6 @@ public class Main {
             while (row != destRow || col != destCol) {
                 for (Piece piece : pieces) {
                     if (piece.getRow() == row && piece.getCol() == col) {
-                        // There's a piece in the path
                         return true;
                     }
                 }
@@ -162,6 +184,21 @@ public class Main {
                 col += colIncrement;
             }
             return false;
+        } else if (pieceName=='B') {
+            int rowIncrement = (destRow > currentRow) ? 1 : -1;
+            int colIncrement = (destCol > currentCol) ? 1 : -1;
+            int row = currentRow + rowIncrement;
+            int col = currentCol + colIncrement;
+
+            while (row != destRow && col != destCol) {
+                for (Piece piece : pieces) {
+                    if (piece.getRow() == row && piece.getCol() == col) {
+                        return true;
+                    }
+                }
+                row += rowIncrement;
+                col += colIncrement;
+            }
         }
 
         return false;
