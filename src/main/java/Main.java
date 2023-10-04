@@ -76,27 +76,33 @@ public class Main {
                     String pieceDest =scanner2.nextLine().trim();
                     pieceColumnDest = columnToIndex(pieceDest.charAt(0));
                     pieceRowDest = rowToIndex(pieceDest.charAt(1));
-//                    System.out.println(piece);
                     boolean movement = move(pieces,piece.getName(),currentCol,currentRow,pieceColumnDest,pieceRowDest);
                     if (movement){
+                        boolean sameColor =true;
                         for (Piece pieceR : pieces ) {
                             if (pieceR.getCol()== pieceColumnDest && pieceR.getRow() == pieceRowDest){
-                                pieces.remove(pieceR);
-                                break;
+                                if (!pieceR.getColor().equals(piece.getColor())){
+                                    pieces.remove(pieceR);
+                                    break;
+                                }else{
+                                    System.out.println("you cant capture this piece");
+                                    sameColor=false;
+                                    break;
+                                }
                             }
                         }
-//                        System.out.println("you can move");
-//                        System.out.println(piece);
-                        piece.setCol(pieceColumnDest);
-                        piece.setRow(pieceRowDest);
-                        printBoard(pieces);
+                        if(sameColor){
+                            piece.setCol(pieceColumnDest);
+                            piece.setRow(pieceRowDest);
+                        }
+                            printBoard(pieces);
                     }else {
                         System.out.println("you can't move to this cell");
                         printBoard(pieces);
                     }
                 }
             }
-//            System.out.println("This cell is empty");
+            System.out.println("This cell is empty");
         }else {
             System.out.println("Please enter a valid cell Coordinates");
         }
@@ -164,8 +170,18 @@ public class Main {
           return diffCol<=1 && diffRow<=1;
       }else if(pieceName=='N'){
           return diffCol==1 && diffRow==2 ||  diffCol==2 && diffRow==1;
-      } else if (pieceName=='P') {
-          return true;
+      }
+      else if (pieceName=='P') {
+          if(currentRow ==6 || currentRow == 1){
+              if(destRow == (currentRow+2) ||destRow == (currentRow-2) ||destRow == (currentRow+1) ||destRow == (currentRow-1)){
+                  return !PieceInPath( pieces,pieceName,  currentCol,  currentRow,  destCol,  destRow);
+              }
+          }else {
+              if(destRow == (currentRow+1) ||destRow == (currentRow-1)  ){
+                  return !PieceInPath( pieces,pieceName,  currentCol,  currentRow,  destCol,  destRow);
+              }
+          }
+          return false;
       }
         return false;
     }
