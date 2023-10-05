@@ -25,6 +25,7 @@ public class Main {
 //        System.out.println(block);
 //        System.out.println(pieces);
         Board board =new Board(8,8);
+
         System.out.print("   a   b   c   d   e   f   g   h\n");
         for (int row = 0; row <board.getRows(); row++) {
             System.out.print(row + " ");
@@ -77,6 +78,9 @@ public class Main {
                     pieceColumnDest = columnToIndex(pieceDest.charAt(0));
                     pieceRowDest = rowToIndex(pieceDest.charAt(1));
                     boolean movement = move(pieces,piece.getName(),currentCol,currentRow,pieceColumnDest,pieceRowDest);
+
+                    isCheck(pieces,piece.getColor() , piece.getName(), pieceRowDest,pieceColumnDest );
+
                     if (movement){
                         boolean sameColor =true;
                         for (Piece pieceR : pieces ) {
@@ -103,6 +107,7 @@ public class Main {
                 }
             }
             System.out.println("This cell is empty");
+            printBoard(pieces);
         }else {
             System.out.println("Please enter a valid cell Coordinates");
         }
@@ -187,7 +192,6 @@ public class Main {
     }
 
     static boolean PieceInPath(List<Piece> pieces ,char pieceName,int currentCol, int currentRow, int destCol, int destRow ){
-//        if(pieceName=='R' || pieceName=='Q' || pieceName=='B'){
             int rowIncrement = (currentRow == destRow) ? 0 : (currentRow < destRow) ? 1 : -1;
             int colIncrement = (currentCol == destCol) ? 0 : (currentCol < destCol) ? 1 : -1;
             int row = currentRow + rowIncrement;
@@ -201,8 +205,43 @@ public class Main {
                 row += rowIncrement;
                 col += colIncrement;
             }
-//        }
         return false;
     }
+
+
+    static boolean isCheck(List<Piece> pieces, Piece.Color pieceColor ,char pieceName,int pieceRowDest  , int  pieceColumnDest){
+        int kingCol = 0;
+        int kingRow = 0;
+        Piece.Color kingColor = null;
+        for (Piece piece : pieces){
+            if (piece.getName()== 'K' && !piece.getColor().equals(pieceColor)){
+                 kingCol = piece.getCol();
+                 kingRow = piece.getRow();
+                 kingColor = piece.getColor();
+                if(move( pieces, pieceName, pieceColumnDest, pieceRowDest,  kingCol,  kingRow)){
+                    System.out.println("king  checked");
+                    break;
+                }
+                System.out.println("king not checked" );
+                break;
+            }
+        }
+        return true;
+    }
+//    static void findClosestEnemies(List<Piece> pieces, int kingRow , int kingCol , Piece.Color kingColor , int pieceRowDest , int pieceColumnDest, char pieceName){
+//        for (Piece piece: pieces) {
+//                if(move( pieces, pieceName, pieceColumnDest, pieceRowDest,  kingCol,  kingRow)){
+//                    System.out.println("king  checked");
+//                    break;
+//                }
+//                System.out.println("king not checked" );
+//                break;
+//
+//        }
+//    }
 }
+
+
+
+
 
