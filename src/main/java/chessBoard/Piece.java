@@ -30,14 +30,17 @@ public abstract  class Piece {
     }
 
     public void setColor(Color color) {
+
         this.color = color;
     }
 
     public void setName(char name) {
+
         this.name = name;
     }
 
     public void setRow(int row) {
+
         this.row = row;
     }
 
@@ -46,9 +49,6 @@ public abstract  class Piece {
     }
 
 
-    public enum Color{
-        BLACK , WHITE
-    }
 
     @Override
     public String toString() {
@@ -58,5 +58,8 @@ public abstract  class Piece {
                 ", row=" + row +
                 ", col=" + col +
                 '}';
+    }
+    public enum Color{
+        BLACK , WHITE
     }
 }
